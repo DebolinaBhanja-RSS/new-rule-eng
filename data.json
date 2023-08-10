@@ -1,0 +1,54 @@
+{
+  "rulenamespace": [
+    {
+      "id": 1,
+      "rulenamespace": "ROUTING",
+      "category" : "Input",
+      "operations" : "equals",
+      "inputtype" : "ComponentType",
+      "componenttype" : "overlayAPI",
+      "statecode": "DISPATCHED"
+    },
+    {
+      "id": 2,
+      "rulenamespace": "FLOWSTART",
+      "category" : "Output",
+      "operations" : "contains",
+      "inputtype" : "StateCode",
+      "componenttype" : "overlayPU",
+      "statecode": "DISPATCHED_CANCEL"
+    },
+    {
+      "id": 3,
+      "rulenamespace": "",
+      "category" : "",
+      "operations" : "",
+      "inputtype" : "MessageType",
+      "componenttype" : "InsureCloud"
+    },
+    {
+      "id": 4,
+      "rulenamespace": "",
+      "category" : "",
+      "operations" : "",
+      "inputtype" : "",
+      "componenttype" : "Bank"
+    },
+    {
+      "id": 5,
+      "rulenamespace": "",
+      "category" : "",
+      "operations" : "",
+      "inputtype" : "",
+      "componenttype" : "Bank1"
+    },
+    {
+      "id": 6,
+      "rulenamespace": "",
+      "category" : "",
+      "operations" : "",
+      "inputtype" : "",
+      "componenttype" : "NA"
+    }
+  ]
+  }
