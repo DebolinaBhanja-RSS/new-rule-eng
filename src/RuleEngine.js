@@ -56,11 +56,11 @@ const RuleEngine = () => {
         const storedActionsData = JSON.parse(localStorage.getItem('actions'));
 
         if (storedConditionsData) {
-          setAddedValues(storedConditionsData);
+            setAddedValues(storedConditionsData);
         }
-    
+
         if (storedActionsData) {
-          setAddedValues2(storedActionsData);
+            setAddedValues2(storedActionsData);
         }
         // Parse the JSON string to get the array of objects
         if (storedNamespaceData) {
@@ -77,11 +77,11 @@ const RuleEngine = () => {
 
     useEffect(() => {
         localStorage.setItem('conditions', JSON.stringify(addedValues));
-      }, [addedValues]);
-    
-      useEffect(() => {
+    }, [addedValues]);
+
+    useEffect(() => {
         localStorage.setItem('actions', JSON.stringify(addedValues2));
-      }, [addedValues2]);
+    }, [addedValues2]);
 
     // RuleNamespace Filter
     const uniqueRuleNamespaces = Array.from(new Set(namespaceData.map(item => item.ruleNamespace)));
@@ -242,7 +242,16 @@ const RuleEngine = () => {
     }));
 
 
-    
+    function handleDelete(index) {
+        const newValues = addedValues2.filter((_, i) => i !== index);
+        setAddedValues2(newValues); // Assuming you're using state to manage addedValues2
+    }
+
+    function handleDelete2(index) {
+        const newValues = addedValues.filter((_, i) => i !== index);
+        setAddedValues(newValues); // Assuming you're using state to manage addedValues2
+    }
+
 
     const handleAddValue = () => {
 
@@ -442,18 +451,22 @@ const RuleEngine = () => {
                                     <Button variant="contained" color="primary" onClick={handleAddValue} style={{ backgroundColor: 'green', color: 'white', padding: '10px' }}>
                                         Add To The List
                                     </Button>
-
-                                    <Button variant="contained" color="primary" onClick={handleClearValues} style={{ backgroundColor: 'black', color: 'white', padding: '10px' }}>
-                                        Clear The Input Segment Form Fields
-                                    </Button>
                                 </div>
 
                             </fieldset>
                             <div>
-                                <h4>List</h4>
+                            <h4>List</h4>
                                 <ul>
                                     {addedValues.map((value, index) => (
-                                        <li key={index}>{value}</li>
+                                        <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            {value}
+                                            <button
+                                                onClick={() => handleDelete2(index)}
+                                                style={{ background: 'red', color: 'white', border: 'none', cursor: 'pointer' }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
@@ -742,9 +755,18 @@ const RuleEngine = () => {
                                 <h4>List</h4>
                                 <ul>
                                     {addedValues2.map((value, index) => (
-                                        <li key={index}>{value}</li>
+                                        <li key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            {value}
+                                            <button
+                                                onClick={() => handleDelete(index)}
+                                                style={{ background: 'red', color: 'white', border: 'none', cursor: 'pointer' }}
+                                            >
+                                                Delete
+                                            </button>
+                                        </li>
                                     ))}
                                 </ul>
+
                             </div>
                         </Box>
                     )}
