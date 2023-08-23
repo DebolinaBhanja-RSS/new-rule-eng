@@ -16,6 +16,8 @@ const RuleEngineList = (props) => {
         const data1 = await response1.json();
         const response2 = await fetch('http://localhost:8081/rule-admin/rule-component-value/rule-category');
         const data2 = await response2.json();
+        const response3 = await fetch('http://localhost:8081/rule-admin/rules/custom');
+        const data3 = await response2.json();
 
         setApiData({
           apiData1: data1,
@@ -51,9 +53,8 @@ const RuleEngineList = (props) => {
       {apiData.apiData1 && (
         <Datagrid>
           {apiData.apiData1.map((item) => (
-            <TextField key={item.id} source="id" record={item} />
+            <TextField key={item.id} source="id"/>
           ))}
-          <TextField source="rulenamespace" />
           <EditButton />
         </Datagrid>
       )}

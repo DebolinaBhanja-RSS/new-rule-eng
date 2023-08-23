@@ -5,29 +5,39 @@ import { Box } from '@mui/system';
 import { Tabs, Tab, Button } from '@mui/material';
 import { Dashboard as DashboardIcon } from '@mui/icons-material';
 
-const RuleCategoryList = [
-    { id: '1', value: 'input' },
-    { id: '2', value: 'output' },
-];
-
-const RuleOperationsList = [
-    { id: '1', value: 'operations' }
-];
-
-
 const RuleEngine = () => {
     const [namespaceData, setNamespaceData] = useState([]);
     const [categoryName, setCategoryData] = useState([]);
-    const [showSegments, setShowSegments] = useState(false);
-    const [showSegments2, setShowSegments2] = useState(false);
-    const [showSegments3, setShowSegments3] = useState(false);
+    const [isEnabled1, setIsEnabled1] = React.useState(true);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [operation, setOperation] = useState('');
+    const [inputType, setInputType] = useState('');
+    const [componentValue, setComponentValue] = useState('');
+    const [stateCode, setStateCode] = useState('');
+    const [messageValue, setMessageValue] = useState('');
+    const [outputType, setOutputType] = useState('');
+    const [actionAdapter, setActionAdapter] = useState('');
+    const [initialState, setInitialState] = useState('');
+    const [initialComponent, setInitialComponent] = useState('');
+    const [isoTxnStatusCode, setIsoTxnStatusCode] = useState('');
+    const [systemDescription, setSystemDescription] = useState('');
+    const [txnType, setTxnType] = useState('');
+    const [txnDirection, setTxnDirection] = useState('');
+    const [currentState, setCurrentState] = useState('');
+    const [nextState, setNextState] = useState('');
+    const [nextComponentType, setNextComponentType] = useState('');
+    const [nextCompDispatchBaseURL, setNextCompDispatchBaseURL] = useState('');
+    const [nextCompDispatchURLSuffix, setNextCompDispatchURLSuffix] = useState('');
+    const [reasonCode, setReasonCode] = useState('');
+    const [reasonDesc, setReasonDesc] = useState('');
+    const [nextCompResponseType, setNextCompResponseType] = useState('');
+    const [nextCompNewFlowFlag, setNextCompNewFlowFlag] = useState('');
+    const [addedValues, setAddedValues] = useState([]);
+    const [addedValues2, setAddedValues2] = useState([]);
 
 
-    const [selectedCategory, setSelectedCategory] = useState([{ categoryName: '', value: '' }]);
-    const handleSelectCategory = (index, fieldName, value) => {
-        const updatedSelectedValues = [...selectedCategory];
-        updatedSelectedValues[index][fieldName] = value;
-        setSelectedCategory(updatedSelectedValues);
+    const handleInputChange = (event, setState) => {
+        setState(event.target.value);
     };
 
     console.log(selectedCategory);
@@ -37,11 +47,21 @@ const RuleEngine = () => {
     const handleTabChange = (event, newValue) => {
         setActiveTab(newValue);
     };
+
     useEffect(() => {
         // Retrieve the "namespace_data" from local storage
         const storedNamespaceData = localStorage.getItem('namespace_data');
         const storedCategoryData = localStorage.getItem('category_data');
+        const storedConditionsData = JSON.parse(localStorage.getItem('conditions'));
+        const storedActionsData = JSON.parse(localStorage.getItem('actions'));
 
+        if (storedConditionsData) {
+          setAddedValues(storedConditionsData);
+        }
+    
+        if (storedActionsData) {
+          setAddedValues2(storedActionsData);
+        }
         // Parse the JSON string to get the array of objects
         if (storedNamespaceData) {
             const parsedNamespaceData = JSON.parse(storedNamespaceData);
@@ -54,6 +74,14 @@ const RuleEngine = () => {
         }
 
     }, []);
+
+    useEffect(() => {
+        localStorage.setItem('conditions', JSON.stringify(addedValues));
+      }, [addedValues]);
+    
+      useEffect(() => {
+        localStorage.setItem('actions', JSON.stringify(addedValues2));
+      }, [addedValues2]);
 
     // RuleNamespace Filter
     const uniqueRuleNamespaces = Array.from(new Set(namespaceData.map(item => item.ruleNamespace)));
@@ -213,26 +241,86 @@ const RuleEngine = () => {
         value: filteredName.value
     }));
 
-    const handleButtonClick = () => {
-        setShowSegments(true);
-    };
 
-    const handleButtonClick2 = () => {
-        setShowSegments2(true);
+    
 
-    };
+    const handleAddValue = () => {
 
-    const handleButtonClick3 = () => {
-        setShowSegments3(true);
+        const calculatedValue = calculateValue(inputType);
+        const concatenatedValue = `input.${inputType}.${operation}("${calculatedValue}")`;
+        setAddedValues([...addedValues, concatenatedValue]);
 
     };
 
-    const handleUpdateAtIndex = (index, updatedData) => {
-        setSelectedCategory(prevState => {
-            const updatedCategory = [...prevState];
-            updatedCategory[index] = { ...updatedCategory[index], ...updatedData };
-            return updatedCategory;
-        });
+    const calculateValue = (selectedInputType) => {
+        // Implement your logic to determine the componentValue based on the selectedInputType
+        // For example, use a switch statement or if-else conditions
+        switch (selectedInputType) {
+            case 'componentType':
+                return componentValue;
+            case 'stateCode':
+                return stateCode;
+            case 'messageType':
+                return messageValue;
+        }
+    };
+
+    const handleAddValue2 = () => {
+
+        const calculatedValue2 = calculateValue2(outputType);
+        const concatenatedValue2 = `output.${outputType}("${calculatedValue2}")`;
+        setAddedValues2([...addedValues2, concatenatedValue2]);
+
+    };
+
+    const calculateValue2 = (selectedOutputType) => {
+        // Implement your logic to determine the componentValue based on the selectedInputType
+        // For example, use a switch statement or if-else conditions
+        switch (selectedOutputType) {
+            case 'setActionAdapter':
+                return actionAdapter;
+            case 'setInitialState':
+                return initialState;
+            case 'setInitialComponent':
+                return initialComponent;
+            case 'setIsoTxnStatusCode':
+                return isoTxnStatusCode;
+            case 'setSystemDescription':
+                return systemDescription;
+            case 'setTxnType':
+                return txnType;
+            case 'setTxnDirection':
+                return txnDirection;
+            case 'setCurrentState':
+                return currentState;
+            case 'setNextState':
+                return nextState;
+            case 'setNextComponentType':
+                return nextComponentType;
+            case 'setNextCompDispatchBaseURL':
+                return nextCompDispatchBaseURL;
+            case 'setNextCompDispatchURLSuffix':
+                return nextCompDispatchURLSuffix;
+            case 'setReasonCode':
+                return reasonCode;
+            case 'setReasonDesc':
+                return reasonDesc;
+            case 'setNextCompResponseType':
+                return nextCompResponseType;
+            case 'setNextCompNewFlowFlag':
+                return nextCompNewFlowFlag;
+        }
+    };
+
+    const handleClearValues = (event) => {
+
+        setComponentValue('');
+        setInputType('NA');
+        setOperation('NA');
+
+        event.target.reset();
+
+
     };
 
     return (
@@ -268,201 +356,115 @@ const RuleEngine = () => {
                     </Tabs>
 
                     {activeTab === 0 && (
-                        <div>
-                            <Button onClick={handleButtonClick} style={{ backgroundColor: '#1dabef', color: 'white', borderRadius: '3px', padding: '5px', marginLeft: '10px', marginTop: '10px', marginBottom: '10px' }}>Category Set
-                            </Button>
-                            {showSegments && (
-                                <div>
-                                    {selectedCategory.map((input, index) => (
-                                        <div key={index}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                                                <fieldset className='Category'>
-                                                    <legend>Category Segment</legend>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label='Category'
-                                                                source={`categoryName${index}`}
-                                                                choices={RuleCategoryList}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleSelectCategory(index, 'categoryName', e.target.value)}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label='InputType'
-                                                                source={`value${index}`}
-                                                                choices={inputtypeOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleSelectCategory(index, 'value', e.target.value)}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </fieldset>
-                                            </Box>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <Button onClick={handleButtonClick2} style={{ backgroundColor: '#1dabef', color: 'white', borderRadius: '3px', padding: '5px', marginLeft: '10px', marginTop: '10px', marginBottom: '10px' }}>Operation Set
-                            </Button>
-                            {showSegments2 && (
-                                <div>
-                                    {selectedCategory.map((input, index) => (
-                                        <div key={index}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                                                <fieldset className='Operation'>
-                                                    <legend>Operation Segment</legend>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label='Operation'
-                                                                source={`categoryName1${index}`}
-                                                                choices={RuleOperationsList}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(1, { categoryName: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label="Operation Value"
-                                                                source={`value1${index}`}
-                                                                choices={operationsOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(1, { value: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </fieldset>
-                                            </Box>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                            <Button onClick={handleButtonClick3} style={{ backgroundColor: '#1dabef', color: 'white', borderRadius: '3px', padding: '5px', marginLeft: '10px', marginTop: '10px', marginBottom: '10px' }}>Type Set
-                            </Button>
-                            {showSegments3 && (
-                                <div>
-                                    {selectedCategory.map((input, index) => (
-                                        <div key={index}>
-                                            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                                                <fieldset className='Category'>
-                                                    <legend>Type Segment</legend>
-                                                    <Grid container spacing={2}>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label='Type'
-                                                                source={`categoryName3${index}`}
-                                                                choices={inputtypeOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(2, { categoryName: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label="Components"
-                                                                source={`value3${index}`}
-                                                                choices={componentOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(2, { value: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label="StateCode"
-                                                                source={`value4${index}`}
-                                                                choices={stateOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(2, { value: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                        <Grid item lg={6}>
-                                                            <SelectInput
-                                                                fullWidth
-                                                                label="Message"
-                                                                source={`value5${index}`}
-                                                                choices={messageOptions}
-                                                                optionText="value"
-                                                                optionValue="value"
-                                                                variant="outlined"
-                                                                style={{ width: '90%', margin: '3%' }}
-                                                                validate={required()}
-                                                                onChange={(e) => handleUpdateAtIndex(2, { value: e.target.value })}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </fieldset>
-                                            </Box>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-
-                        </div>
-                    )}
-                </Box>
-
-                {/* 
-                    {activeTab === 1 && (
                         <Box>
-                            <fieldset className='Output'>
-                                <legend>Category Segment</legend>
+                            <fieldset className='Category'>
+                                <legend>Input Segment</legend>
                                 <Grid container spacing={2}>
                                     <Grid item lg={4}>
                                         <SelectInput
-                                        
                                             fullWidth
-                                            label="Category"
-                                            source="category4"
-                                            choices={RuleCategoryList}
+                                            label='Type'
+                                            source='inputtype'
+                                            choices={inputtypeOptions}
                                             optionText="value"
                                             optionValue="value"
                                             variant="outlined"
                                             style={{ width: '90%', margin: '3%' }}
                                             validate={required()}
+                                            onChange={(event) => handleInputChange(event, setInputType)}
                                         />
                                     </Grid>
+                                    <Grid item lg={4}>
+                                        <SelectInput
+                                            fullWidth
+                                            label='Operation'
+                                            source='operation'
+                                            choices={operationsOptions}
+                                            optionText="value"
+                                            optionValue="value"
+                                            variant="outlined"
+                                            style={{ width: '90%', margin: '3%' }}
+                                            validate={required()}
+                                            onChange={(event) => handleInputChange(event, setOperation)}
+                                        />
                                     </Grid>
-                                    </fieldset>
+                                    {inputType === 'componentType' && (
+                                        <Grid item lg={4}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="Components"
+                                                source='components'
+                                                choices={componentOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setComponentValue)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {inputType === 'stateCode' && (
+                                        <Grid item lg={4}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="StateCode"
+                                                source='statecode'
+                                                choices={stateOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setStateCode)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {inputType === 'messageType' && (
+                                        <Grid item lg={4}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="Message"
+                                                source='message'
+                                                choices={messageOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setMessageValue)}
+                                            />
+                                        </Grid>
+                                    )}
+                                </Grid>
 
-                                    <fieldset className='Output'>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Button variant="contained" color="primary" onClick={handleAddValue} style={{ backgroundColor: 'green', color: 'white', padding: '10px' }}>
+                                        Add To The List
+                                    </Button>
+
+                                    <Button variant="contained" color="primary" onClick={handleClearValues} style={{ backgroundColor: 'black', color: 'white', padding: '10px' }}>
+                                        Clear The Input Segment Form Fields
+                                    </Button>
+                                </div>
+
+                            </fieldset>
+                            <div>
+                                <h4>List</h4>
+                                <ul>
+                                    {addedValues.map((value, index) => (
+                                        <li key={index}>{value}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </Box>
+                    )}
+
+
+
+                    {activeTab === 1 && (
+                        <Box>
+                            <fieldset className='Output'>
                                 <legend>Output Segment</legend>
                                 <Grid container spacing={2}>
                                     <Grid item lg={4}>
@@ -476,215 +478,277 @@ const RuleEngine = () => {
                                             variant="outlined"
                                             style={{ width: '90%', margin: '3%' }}
                                             validate={required()}
+                                            onChange={(event) => handleInputChange(event, setOutputType)}
                                         />
                                     </Grid>
-                                    <Grid item lg={4}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setActionAdapter"
-                                            source="action"
-                                            choices={actionOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setInitialState"
-                                            source="state"
-                                            choices={stateOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setInitialComponent"
-                                            source="component"
-                                            choices={componentOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setIsoTxnStatusCode"
-                                            source="action6"
-                                            choices={statusOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <TextInput
-                                            fullWidth
-                                            label="setSystemDescription"
-                                            source="action8"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setTxnType"
-                                            source="action10"
-                                            choices={txnOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setTxnDirection"
-                                            source="action11"
-                                            choices={txnDirectionsOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setCurrentState"
-                                            source="action12"
-                                            choices={stateOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setNextState"
-                                            source="action13"
-                                            choices={stateOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6}>
-                                        <SelectArrayInput
-                                            fullWidth
-                                            label="setNextComponentType"
-                                            source="action14"
-                                            choices={stateOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={6}>
-                                        <SelectArrayInput
-                                            fullWidth
-                                            label="setNextCompDispatchBaseURL"
-                                            source="action15"
-                                            choices={baseOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6}>
-                                        <SelectArrayInput
-                                            fullWidth
-                                            label="setNextCompDispatchURLSuffix"
-                                            source="action16"
-                                            choices={suffixOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6}>
-                                        <SelectInput
-                                            fullWidth
-                                            label="setReasonCode"
-                                            source="action17"
-                                            choices={reasonOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6}>
-                                        <TextInput
-                                            fullWidth
-                                            label="setReasonDesc"
-                                            source="action18"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                   <Grid item lg={3}>
-                                        <SelectArrayInput
-                                            fullWidth
-                                            label="setNextCompResponseType"
-                                            source="action20"
-                                            choices={responseOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
-                                    <Grid item lg={6}>
-                                        <SelectArrayInput
-                                            fullWidth
-                                            label="setNextCompNewFlowFlag"
-                                            source="action21"
-                                            choices={flowFlagOptions}
-                                            optionText="value"
-                                            optionValue="value"
-                                            variant="outlined"
-                                            style={{ width: '90%', margin: '3%' }}
-                                            validate={required()}
-                                        />
-                                    </Grid>
+                                    {outputType === 'setActionAdapter' && (
+                                        <Grid item lg={4}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setActionAdapter"
+                                                source="action"
+                                                choices={actionOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setActionAdapter)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setInitialState' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setInitialState"
+                                                source="state"
+                                                choices={stateOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setInitialState)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setInitialComponent' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setInitialComponent"
+                                                source="component"
+                                                choices={componentOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setInitialComponent)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setIsoTxnStatusCode' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setIsoTxnStatusCode"
+                                                source="action6"
+                                                choices={statusOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setIsoTxnStatusCode)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setSystemDescription' && (
+                                        <Grid item lg={3}>
+                                            <TextInput
+                                                fullWidth
+                                                label="setSystemDescription"
+                                                source="action8"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setSystemDescription)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setTxnType' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setTxnType"
+                                                source="action10"
+                                                choices={txnOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setTxnType)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setTxnDirection' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setTxnDirection"
+                                                source="action11"
+                                                choices={txnDirectionsOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setTxnDirection)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setCurrentState' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setCurrentState"
+                                                source="action12"
+                                                choices={stateOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setCurrentState)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextState' && (
+                                        <Grid item lg={3}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setNextState"
+                                                source="action13"
+                                                choices={stateOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextState)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextComponentType' && (
+                                        <Grid item lg={6}>
+                                            <SelectArrayInput
+                                                fullWidth
+                                                label="setNextComponentType"
+                                                source="action14"
+                                                choices={componentOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextComponentType)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextCompDispatchBaseURL' && (
+                                        <Grid item lg={6}>
+                                            <SelectArrayInput
+                                                fullWidth
+                                                label="setNextCompDispatchBaseURL"
+                                                source="action15"
+                                                choices={baseOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextCompDispatchBaseURL)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextCompDispatchURLSuffix' && (
+                                        <Grid item lg={6}>
+                                            <SelectArrayInput
+                                                fullWidth
+                                                label="setNextCompDispatchURLSuffix"
+                                                source="action16"
+                                                choices={suffixOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextCompDispatchURLSuffix)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setReasonCode' && (
+                                        <Grid item lg={6}>
+                                            <SelectInput
+                                                fullWidth
+                                                label="setReasonCode"
+                                                source="action17"
+                                                choices={reasonOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setReasonCode)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setReasonDesc' && (
+                                        <Grid item lg={6}>
+                                            <TextInput
+                                                fullWidth
+                                                label="setReasonDesc"
+                                                source="action18"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setReasonDesc)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextCompResponseType' && (
+                                        <Grid item lg={3}>
+                                            <SelectArrayInput
+                                                fullWidth
+                                                label="setNextCompResponseType"
+                                                source="action20"
+                                                choices={responseOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextCompResponseType)}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {outputType === 'setNextCompNewFlowFlag' && (
+                                        <Grid item lg={6}>
+                                            <SelectArrayInput
+                                                fullWidth
+                                                label="setNextCompNewFlowFlag"
+                                                source="action21"
+                                                choices={flowFlagOptions}
+                                                optionText="value"
+                                                optionValue="value"
+                                                variant="outlined"
+                                                style={{ width: '90%', margin: '3%' }}
+                                                validate={required()}
+                                                onChange={(event) => handleInputChange(event, setNextCompNewFlowFlag)}
+                                            />
+                                        </Grid>
+                                    )}
                                 </Grid>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <Button variant="contained" color="primary" onClick={handleAddValue2} style={{ backgroundColor: 'green', color: 'white', padding: '10px' }}>
+                                        Add To The List
+                                    </Button>
+                                </div>
                             </fieldset>
-
+                            <div>
+                                <h4>List</h4>
+                                <ul>
+                                    {addedValues2.map((value, index) => (
+                                        <li key={index}>{value}</li>
+                                    ))}
+                                </ul>
+                            </div>
                         </Box>
-                    )} */}
+                    )}
+                </Box>
 
                 <Toolbar>
                     <SaveButton

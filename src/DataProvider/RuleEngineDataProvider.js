@@ -1,8 +1,10 @@
 // in src/dataProvider.ts
 import { fetchUtils } from "react-admin";
 import { stringify } from "query-string";
+import { ruleHttpClient } from "./MainDataProvider";
 
 const apiUrl = 'http://localhost:8081/rule-admin';
+const save = '/rule-admin/rules/custom/save';
 const httpClient = fetchUtils.fetchJson;
 
 // TypeScript users must reference the type `DataProvider`
@@ -72,11 +74,26 @@ export default {
     },
 
     create: (resource, params) => {
-        return httpClient(`${apiUrl}/${resource}`, {
+        console.log(params);
+        return ruleHttpClient(`${save}`, {
             method: 'POST',
-            body: JSON.stringify(params.data),
+            body: JSON.stringify({
+                "tenant": "IC",
+
+                "ruleNamespace": params.data.ruleNamespace,
+
+                "conditions": JSON.parse(localStorage.conditions),
+
+                "actions": JSON.parse(localStorage.actions),
+
+                "priority": 1,
+
+                "description": "Describe the action"
+
+            }),
         }).then(({ json }) => ({
-            data: { ...params.data, id: json.id },
+            data: { ...params.data, id: json.ruleId },
+
         }));
     },
 
