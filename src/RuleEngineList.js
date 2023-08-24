@@ -48,14 +48,15 @@ const RuleEngineList = (props) => {
   return (
     <ListBase {...props}>
       <ListToolbar />
-      {apiData.apiData1 && (
+      {/* {apiData.apiData1 && ( */}
         <Datagrid>
-          {apiData.apiData1.map((item) => (
-            <TextField key={item.id} source="id"/>
-          ))}
-          <EditButton />
+          {/* {apiData.apiData1.map((item) => ( */}
+            <TextField  source="ruleId" label='Rule Id'/>
+            <TextField  source="tenant" label='Tenant'/>
+            <TextField  source="ruleNamespace" label='Rule Namespace'/>
+          {/* ))} */}
         </Datagrid>
-      )}
+      {/* )} */}
     </ListBase>
   );
 };

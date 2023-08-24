@@ -3,7 +3,7 @@ import { fetchUtils } from "react-admin";
 import { stringify } from "query-string";
 import { ruleHttpClient } from "./MainDataProvider";
 
-const apiUrl = 'http://localhost:8081/rule-admin';
+const apiUrl = '/rule-admin/rules/custom';
 const save = '/rule-admin/rules/custom/save';
 const httpClient = fetchUtils.fetchJson;
 
@@ -17,10 +17,15 @@ export default {
             range: JSON.stringify([(page - 1) * perPage, page * perPage - 1]),
             filter: JSON.stringify(params.filter),
         };
-        const url = `${apiUrl}/${resource}?${stringify(query)}`;
+        const url = `${apiUrl}?${stringify(query)}`;
 
         return httpClient(url).then(({ headers, json }) => ({
-            data: json,
+            data: json.map(res => ({
+                ...res,
+                id: res.ruleId,
+                tenant: res.tenant,
+                rulenamespace: res.ruleNamespace,
+            })),
             total: 10,
         }));
     },

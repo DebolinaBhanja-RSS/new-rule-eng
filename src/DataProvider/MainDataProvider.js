@@ -1,5 +1,5 @@
 import { fetchUtils, combineDataProviders } from 'react-admin';
-import DataProvider from './RuleEngineDataProvider';
+import RuleEngineDataProvider from './RuleEngineDataProvider';
 
 export const ruleHttpClient = (url, options = {}) => {
     if (!options.headers) {
@@ -13,7 +13,7 @@ export const ruleHttpClient = (url, options = {}) => {
 export const mainDataProvider = combineDataProviders((resource) => {
     switch (resource) {
         case 'rule-namespace':
-            return DataProvider;
+            return RuleEngineDataProvider;
         default:
             throw new Error(`Unknown resource: ${resource}`);
     }
